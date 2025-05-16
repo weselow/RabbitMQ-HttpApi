@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Options;
+п»їusing Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using RabbitMqApi.Configuration;
 using RabbitMqApi.Middleware;
@@ -31,7 +31,7 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Please enter a valid token",
         Name = "Authorization",
         Type = SecuritySchemeType.Http,
-        BearerFormat = "Token", // Можно просто "JWT" или "Token"
+        BearerFormat = "Token", // РњРѕР¶РЅРѕ РїСЂРѕСЃС‚Рѕ "JWT" РёР»Рё "Token"
         Scheme = "bearer"
     });
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -53,13 +53,13 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 
 // 2. Configure HTTP request pipeline
-var logger = app.Services.GetRequiredService<ILogger<Program>>(); // Получаем логгер
+var logger = app.Services.GetRequiredService<ILogger<Program>>(); // РџРѕР»СѓС‡Р°РµРј Р»РѕРіРіРµСЂ
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "RabbitMQ API V1");
-    c.RoutePrefix = "swagger"; // Доступ к Swagger UI по /swagger
+    c.RoutePrefix = "swagger"; // Р”РѕСЃС‚СѓРї Рє Swagger UI РїРѕ /swagger
 });
 logger.LogInformation("Swagger UI enabled at /swagger");
 
@@ -97,28 +97,28 @@ app.MapGet("/get/{queue}", async (
         if (acceptHeader.Contains(MediaTypeNames.Application.Json, StringComparison.OrdinalIgnoreCase))
         {
             contentType = MediaTypeNames.Application.Json;
-            // Если мы хотим гарантировать JSON, можно обернуть:
+            // Р•СЃР»Рё РјС‹ С…РѕС‚РёРј РіР°СЂР°РЅС‚РёСЂРѕРІР°С‚СЊ JSON, РјРѕР¶РЅРѕ РѕР±РµСЂРЅСѓС‚СЊ:
             // responseBody = JsonSerializer.Serialize(new { message = responseBody });
-            // Но по задаче: "Поддерживает Accept: application/json и text/plain"
-            // Это означает, что мы можем отдать контент в указанном формате.
-            // Если в очереди лежит текст, а клиент просит JSON, он получит текст с Content-Type: application/json.
-            // Клиент должен быть готов к этому или данные в очереди должны соответствовать.
+            // РќРѕ РїРѕ Р·Р°РґР°С‡Рµ: "РџРѕРґРґРµСЂР¶РёРІР°РµС‚ Accept: application/json Рё text/plain"
+            // Р­С‚Рѕ РѕР·РЅР°С‡Р°РµС‚, С‡С‚Рѕ РјС‹ РјРѕР¶РµРј РѕС‚РґР°С‚СЊ РєРѕРЅС‚РµРЅС‚ РІ СѓРєР°Р·Р°РЅРЅРѕРј С„РѕСЂРјР°С‚Рµ.
+            // Р•СЃР»Рё РІ РѕС‡РµСЂРµРґРё Р»РµР¶РёС‚ С‚РµРєСЃС‚, Р° РєР»РёРµРЅС‚ РїСЂРѕСЃРёС‚ JSON, РѕРЅ РїРѕР»СѓС‡РёС‚ С‚РµРєСЃС‚ СЃ Content-Type: application/json.
+            // РљР»РёРµРЅС‚ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РіРѕС‚РѕРІ Рє СЌС‚РѕРјСѓ РёР»Рё РґР°РЅРЅС‹Рµ РІ РѕС‡РµСЂРµРґРё РґРѕР»Р¶РЅС‹ СЃРѕРѕС‚РІРµС‚СЃС‚РІРѕРІР°С‚СЊ.
         }
 
-        // Важно: сначала отправить ответ клиенту, потом подтвердить сообщение
-        // Для этого мы не можем использовать Results.Text или Results.Content напрямую, если они закрывают соединение
-        // или не позволяют выполнить код после.
-        // Вместо этого запишем в Response вручную.
+        // Р’Р°Р¶РЅРѕ: СЃРЅР°С‡Р°Р»Р° РѕС‚РїСЂР°РІРёС‚СЊ РѕС‚РІРµС‚ РєР»РёРµРЅС‚Сѓ, РїРѕС‚РѕРј РїРѕРґС‚РІРµСЂРґРёС‚СЊ СЃРѕРѕР±С‰РµРЅРёРµ
+        // Р”Р»СЏ СЌС‚РѕРіРѕ РјС‹ РЅРµ РјРѕР¶РµРј РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ Results.Text РёР»Рё Results.Content РЅР°РїСЂСЏРјСѓСЋ, РµСЃР»Рё РѕРЅРё Р·Р°РєСЂС‹РІР°СЋС‚ СЃРѕРµРґРёРЅРµРЅРёРµ
+        // РёР»Рё РЅРµ РїРѕР·РІРѕР»СЏСЋС‚ РІС‹РїРѕР»РЅРёС‚СЊ РєРѕРґ РїРѕСЃР»Рµ.
+        // Р’РјРµСЃС‚Рѕ СЌС‚РѕРіРѕ Р·Р°РїРёС€РµРј РІ Response РІСЂСѓС‡РЅСѓСЋ.
         httpContext.Response.ContentType = contentType;
         httpContext.Response.StatusCode = StatusCodes.Status200OK;
         await httpContext.Response.WriteAsync(responseBody, Encoding.UTF8);
 
-        // После успешной отправки клиенту
+        // РџРѕСЃР»Рµ СѓСЃРїРµС€РЅРѕР№ РѕС‚РїСЂР°РІРєРё РєР»РёРµРЅС‚Сѓ
         rabbitService.AckMessage(deliveryTag);
         endpointLogger.LogInformation("Message from queue '{Queue}' sent to client and ACKed.", queue);
 
-        // Results.Ok() или другие Results.* уже отправили бы ответ и завершили бы его.
-        // Поскольку мы уже записали ответ, возвращаем Empty чтобы не было конфликта.
+        // Results.Ok() РёР»Рё РґСЂСѓРіРёРµ Results.* СѓР¶Рµ РѕС‚РїСЂР°РІРёР»Рё Р±С‹ РѕС‚РІРµС‚ Рё Р·Р°РІРµСЂС€РёР»Рё Р±С‹ РµРіРѕ.
+        // РџРѕСЃРєРѕР»СЊРєСѓ РјС‹ СѓР¶Рµ Р·Р°РїРёСЃР°Р»Рё РѕС‚РІРµС‚, РІРѕР·РІСЂР°С‰Р°РµРј Empty С‡С‚РѕР±С‹ РЅРµ Р±С‹Р»Рѕ РєРѕРЅС„Р»РёРєС‚Р°.
         return Results.Empty;
     }
     catch (Exception ex)
@@ -130,9 +130,9 @@ app.MapGet("/get/{queue}", async (
 .WithName($"GetMessageFromQueue")
 .WithOpenApi(operation => new(operation)
 {
-    Summary = "Получает одно сообщение из указанной очереди RabbitMQ.",
-    Description = "Использует BasicGet (autoAck: false). После успешной отправки клиенту вызывает BasicAck. Если очередь пуста, возвращает 204 No Content.",
-    Parameters = { new OpenApiParameter { Name = "queue", In = ParameterLocation.Path, Required = true, Description = "Имя очереди RabbitMQ." } }
+    Summary = "РџРѕР»СѓС‡Р°РµС‚ РѕРґРЅРѕ СЃРѕРѕР±С‰РµРЅРёРµ РёР· СѓРєР°Р·Р°РЅРЅРѕР№ РѕС‡РµСЂРµРґРё RabbitMQ.",
+    Description = "РСЃРїРѕР»СЊР·СѓРµС‚ BasicGet (autoAck: false). РџРѕСЃР»Рµ СѓСЃРїРµС€РЅРѕР№ РѕС‚РїСЂР°РІРєРё РєР»РёРµРЅС‚Сѓ РІС‹Р·С‹РІР°РµС‚ BasicAck. Р•СЃР»Рё РѕС‡РµСЂРµРґСЊ РїСѓСЃС‚Р°, РІРѕР·РІСЂР°С‰Р°РµС‚ 204 No Content.",
+    Parameters = { new OpenApiParameter { Name = "queue", In = ParameterLocation.Path, Required = true, Description = "РРјСЏ РѕС‡РµСЂРµРґРё RabbitMQ." } }
 })
 .Produces(StatusCodes.Status200OK, typeof(string), MediaTypeNames.Text.Plain, MediaTypeNames.Application.Json)
 .Produces(StatusCodes.Status204NoContent)
@@ -166,9 +166,9 @@ app.MapPost("/add/{queue}", async (
     {
         try
         {
-            // Проверяем, является ли строка валидным JSON
+            // РџСЂРѕРІРµСЂСЏРµРј, СЏРІР»СЏРµС‚СЃСЏ Р»Рё СЃС‚СЂРѕРєР° РІР°Р»РёРґРЅС‹Рј JSON
             using var jsonDoc = JsonDocument.Parse(requestBody);
-            // Если мы дошли сюда, JSON валиден. Отправляем его как строку.
+            // Р•СЃР»Рё РјС‹ РґРѕС€Р»Рё СЃСЋРґР°, JSON РІР°Р»РёРґРµРЅ. РћС‚РїСЂР°РІР»СЏРµРј РµРіРѕ РєР°Рє СЃС‚СЂРѕРєСѓ.
         }
         catch (JsonException jsonEx)
         {
@@ -176,7 +176,7 @@ app.MapPost("/add/{queue}", async (
             return Results.BadRequest("Invalid JSON format in request body.");
         }
     }
-    // Для text/plain или других типов контента дополнительной валидации не требуется, передаем как есть.
+    // Р”Р»СЏ text/plain РёР»Рё РґСЂСѓРіРёС… С‚РёРїРѕРІ РєРѕРЅС‚РµРЅС‚Р° РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕР№ РІР°Р»РёРґР°С†РёРё РЅРµ С‚СЂРµР±СѓРµС‚СЃСЏ, РїРµСЂРµРґР°РµРј РєР°Рє РµСЃС‚СЊ.
 
     bool success = rabbitService.PublishMessage(queue, requestBody, messageContentType);
 
@@ -188,28 +188,28 @@ app.MapPost("/add/{queue}", async (
     else
     {
         endpointLogger.LogError("Failed to publish message to queue '{Queue}'", queue);
-        // Ошибка уже залогирована в RabbitService
+        // РћС€РёР±РєР° СѓР¶Рµ Р·Р°Р»РѕРіРёСЂРѕРІР°РЅР° РІ RabbitService
         return Results.Problem("Failed to publish message.", statusCode: StatusCodes.Status500InternalServerError);
     }
 })
 .WithName("AddMessageToQueue")
 .WithOpenApi(operation => new(operation)
 {
-    Summary = "Отправляет сообщение в указанную очередь RabbitMQ.",
-    Description = "Принимает тело запроса (application/json или text/plain). Публикация с delivery_mode = 2 (persistent).",
-    Parameters = { new OpenApiParameter { Name = "queue", In = ParameterLocation.Path, Required = true, Description = "Имя очереди RabbitMQ." } },
+    Summary = "РћС‚РїСЂР°РІР»СЏРµС‚ СЃРѕРѕР±С‰РµРЅРёРµ РІ СѓРєР°Р·Р°РЅРЅСѓСЋ РѕС‡РµСЂРµРґСЊ RabbitMQ.",
+    Description = "РџСЂРёРЅРёРјР°РµС‚ С‚РµР»Рѕ Р·Р°РїСЂРѕСЃР° (application/json РёР»Рё text/plain). РџСѓР±Р»РёРєР°С†РёСЏ СЃ delivery_mode = 2 (persistent).",
+    Parameters = { new OpenApiParameter { Name = "queue", In = ParameterLocation.Path, Required = true, Description = "РРјСЏ РѕС‡РµСЂРµРґРё RabbitMQ." } },
     RequestBody = new OpenApiRequestBody
     {
-        Description = "Тело сообщения для отправки в очередь.",
+        Description = "РўРµР»Рѕ СЃРѕРѕР±С‰РµРЅРёСЏ РґР»СЏ РѕС‚РїСЂР°РІРєРё РІ РѕС‡РµСЂРµРґСЊ.",
         Required = true,
         Content = new Dictionary<string, OpenApiMediaType>
         {
-            [MediaTypeNames.Application.Json] = new OpenApiMediaType { Schema = new OpenApiSchema { Type = "object" } }, // или string
+            [MediaTypeNames.Application.Json] = new OpenApiMediaType { Schema = new OpenApiSchema { Type = "object" } }, // РёР»Рё string
             [MediaTypeNames.Text.Plain] = new OpenApiMediaType { Schema = new OpenApiSchema { Type = "string" } }
         }
     }
 })
-.Accepts<object>(MediaTypeNames.Application.Json, MediaTypeNames.Text.Plain) // Указываем, что эндпоинт принимает эти типы
+.Accepts<object>(MediaTypeNames.Application.Json, MediaTypeNames.Text.Plain) // РЈРєР°Р·С‹РІР°РµРј, С‡С‚Рѕ СЌРЅРґРїРѕРёРЅС‚ РїСЂРёРЅРёРјР°РµС‚ СЌС‚Рё С‚РёРїС‹
 .Produces(StatusCodes.Status200OK, typeof(string))
 .Produces(StatusCodes.Status400BadRequest, typeof(string))
 .Produces(StatusCodes.Status401Unauthorized)
@@ -218,7 +218,7 @@ app.MapPost("/add/{queue}", async (
 
 // 4. Run application
 var apiConfig = app.Services.GetRequiredService<IOptions<ApiConfig>>().Value;
-var listenUrl = $"http://*:{apiConfig.Port}"; // Слушаем на всех интерфейсах
+var listenUrl = $"http://*:{apiConfig.Port}"; // РЎР»СѓС€Р°РµРј РЅР° РІСЃРµС… РёРЅС‚РµСЂС„РµР№СЃР°С…
 logger.LogInformation("Application starting. Listening on: {ListenUrl}", listenUrl);
 
-app.Run(listenUrl); // Используем порт из конфигурации
+app.Run(listenUrl); // РСЃРїРѕР»СЊР·СѓРµРј РїРѕСЂС‚ РёР· РєРѕРЅС„РёРіСѓСЂР°С†РёРё
