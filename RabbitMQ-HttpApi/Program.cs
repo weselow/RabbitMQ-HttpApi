@@ -131,8 +131,7 @@ app.MapGet("/get/{queue}", async (
 .WithOpenApi(operation => new(operation)
 {
     Summary = "Получает одно сообщение из указанной очереди RabbitMQ.",
-    Description = "Использует BasicGet (autoAck: false). После успешной отправки клиенту вызывает BasicAck. Если очередь пуста, возвращает 204 No Content.",
-    Parameters = { new OpenApiParameter { Name = "queue", In = ParameterLocation.Path, Required = true, Description = "Имя очереди RabbitMQ." } }
+    Description = "Использует BasicGet (autoAck: false). После успешной отправки клиенту вызывает BasicAck. Если очередь пуста, возвращает 204 No Content."
 })
 .Produces(StatusCodes.Status200OK, typeof(string), MediaTypeNames.Text.Plain, MediaTypeNames.Application.Json)
 .Produces(StatusCodes.Status204NoContent)
@@ -197,7 +196,7 @@ app.MapPost("/add/{queue}", async (
 {
     Summary = "Отправляет сообщение в указанную очередь RabbitMQ.",
     Description = "Принимает тело запроса (application/json или text/plain). Публикация с delivery_mode = 2 (persistent).",
-    Parameters = { new OpenApiParameter { Name = "queue", In = ParameterLocation.Path, Required = true, Description = "Имя очереди RabbitMQ." } },
+    //Parameters = { new OpenApiParameter { Name = "queue", In = ParameterLocation.Path, Required = true, Description = "Имя очереди RabbitMQ." } },
     RequestBody = new OpenApiRequestBody
     {
         Description = "Тело сообщения для отправки в очередь.",
