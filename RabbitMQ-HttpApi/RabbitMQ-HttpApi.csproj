@@ -21,6 +21,7 @@
     <Folder Include="Configuration\" />
     <Folder Include="Middleware\" />
     <Folder Include="Services\" />
+    <Folder Include="Linux\" />
   </ItemGroup>
 
 </Project>
