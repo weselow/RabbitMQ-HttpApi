@@ -2,7 +2,7 @@ name: Deploy RabbitMQ API via Self-Hosted Runner
 
 on:
   push:
-    branches: [ "main" ] # Запускать только при push в main для развертывания
+    branches: [ "master" ] # Запускать только при push в main для развертывания
 
 env:
   # Путь к директории проекта относительно корня репозитория
