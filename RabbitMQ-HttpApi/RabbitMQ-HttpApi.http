@@ -1,0 +1,6 @@
+@RabbitMQ_HttpApi_HostAddress = http://localhost:5041
+
+GET {{RabbitMQ_HttpApi_HostAddress}}/get/
+Accept: application/json
+
+###
