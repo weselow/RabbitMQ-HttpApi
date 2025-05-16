@@ -55,16 +55,14 @@ var app = builder.Build();
 // 2. Configure HTTP request pipeline
 var logger = app.Services.GetRequiredService<ILogger<Program>>(); // Получаем логгер
 
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "RabbitMQ API V1");
-        c.RoutePrefix = "swagger"; // Доступ к Swagger UI по /swagger
-    });
-    logger.LogInformation("Swagger UI enabled at /swagger");
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "RabbitMQ API V1");
+    c.RoutePrefix = "swagger"; // Доступ к Swagger UI по /swagger
+});
+logger.LogInformation("Swagger UI enabled at /swagger");
+
 
 //app.UseHttpsRedirection();
 
