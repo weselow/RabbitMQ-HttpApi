@@ -1,0 +1,22 @@
+[Unit]
+Description=RabbitMQ HTTP API Service
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/rabbitmq-httpapi
+ExecStart=/usr/bin/dotnet RabbitMq-HttpApi.dll
+Restart=always
+RestartSec=10
+SyslogIdentifier=rabbitmq-httpapi
+User=your_app_user
+Group=your_app_group
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+
+Environment="Api__AuthToken=ВАШ_СУПЕР_СЕКРЕТНЫЙ_ТОКЕН_ИЗ_БЕЗОПАСНОГО_МЕСТА"
+Environment="RabbitMQ__Password=ПАРОЛЬ_ОТ_RABBITMQ"
+Environment="RabbitMQ__Username=myuser" # Можно и несекретные параметры так задавать
+Environment="RabbitMQ__Host=10.20.0.185"
+
+[Install]
+WantedBy=multi-user.target

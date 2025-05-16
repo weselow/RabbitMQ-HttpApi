@@ -1,0 +1,83 @@
+name: Deploy RabbitMQ API via Self-Hosted Runner
+
+on:
+  push:
+    branches: [ "main" ] # Запускать только при push в main для развертывания
+
+env:
+  # Путь к директории проекта относительно корня репозитория
+  PROJECT_PATH: ./RabbitMQ-HttpApi
+  # Директория на сервере, куда будет развернуто приложение
+  DEPLOY_PATH: /opt/rabbitmq-httpapi
+  # Имя systemd сервиса
+  SERVICE_NAME: rabbitmq-httpapi.service
+  # Имя пользователя, от которого запускается сервис (если нужно для chown)
+  # APP_USER: your_app_user # Опционально
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, self-hosted-linux-rabbitmq-api] # Укажите метки вашего self-hosted runner'а
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK (using installed on runner)
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x' # Все еще полезно для гарантии, что runner использует правильную версию,
+                                # или если вы хотите, чтобы action скачал ее, если не найдет локально.
+                                # Если SDK точно есть на runner'е, этот шаг можно упростить или убрать,
+                                # но для консистентности лучше оставить.
+
+    - name: Clean previous build (optional)
+      run: |
+        echo "Cleaning previous deployment at ${{ env.DEPLOY_PATH }}, preserving appsettings.Production.json"
+        if [ -d "${{ env.DEPLOY_PATH }}" ]; then
+          # Удаляем все, кроме appsettings.Production.json
+          # Используем find для этого. Будьте осторожны с этой командой.
+          sudo find ${{ env.DEPLOY_PATH }} -mindepth 1 -maxdepth 1 ! -name 'appsettings.Production.json' -exec rm -rf {} +
+        else
+          sudo mkdir -p ${{ env.DEPLOY_PATH }}
+        fi
+      # Если APP_USER задан, можно добавить:
+      # sudo chown ${{ env.APP_USER }}:${{ env.APP_USER }} ${{ env.DEPLOY_PATH }}
+
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.PROJECT_PATH }}
+
+    - name: Build
+      run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
+
+    # Если бы были тесты, их можно было бы запустить здесь
+    # - name: Test
+    #   run: dotnet test ${{ env.PROJECT_PATH }} --no-build --verbosity normal --configuration Release
+
+    - name: Publish application
+      run: dotnet publish ${{ env.PROJECT_PATH }} --configuration Release --output ${{ env.DEPLOY_PATH }} --no-build
+
+    # Опционально: Установка прав на исполняемый файл, если нужно
+    # - name: Set execute permissions
+    #   run: sudo chmod +x ${{ env.DEPLOY_PATH }}/RabbitMQ-HttpApi # Замените RabbitMQ-HttpApi на имя вашего исполняемого файла
+
+    # Опционально: Если пользователь сервиса отличается от пользователя runner'а
+    # - name: Set ownership of deployed files
+    #   if: env.APP_USER != ''
+    #   run: sudo chown -R ${{ env.APP_USER }}:${{ env.APP_USER }} ${{ env.DEPLOY_PATH }}
+
+    - name: Reload systemd daemon (if service file changed, or good practice)
+      run: sudo systemctl daemon-reload
+
+    - name: Stop application service
+      run: sudo systemctl stop ${{ env.SERVICE_NAME }}
+      continue-on-error: true # Продолжить, даже если сервис не был запущен (например, первый запуск)
+
+    - name: Start application service
+      run: sudo systemctl start ${{ env.SERVICE_NAME }}
+
+    - name: Check application service status
+      run: |
+        sleep 5 # Дать сервису немного времени на запуск
+        sudo systemctl status ${{ env.SERVICE_NAME }}
+        # Проверка, что сервис активен. Если нет - workflow упадет.
+        sudo systemctl is-active --quiet ${{ env.SERVICE_NAME }}
