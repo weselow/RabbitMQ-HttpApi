@@ -36,9 +36,9 @@ jobs:
         if [ -d "${{ env.DEPLOY_PATH }}" ]; then
           # Удаляем все, кроме appsettings.Production.json
           # Используем find для этого. Будьте осторожны с этой командой.
-          sudo find ${{ env.DEPLOY_PATH }} -mindepth 1 -maxdepth 1 ! -name 'appsettings.Production.json' -exec rm -rf {} +
+          /usr/bin/find /opt/rabbitmq-httpapi -mindepth 1 -maxdepth 1 ! -name 'appsettings.Production.json' -exec /usr/bin/rm -rf {} +
         else
-          sudo mkdir -p ${{ env.DEPLOY_PATH }}
+          mkdir -p ${{ env.DEPLOY_PATH }}
         fi
       # Если APP_USER задан, можно добавить:
       # sudo chown ${{ env.APP_USER }}:${{ env.APP_USER }} ${{ env.DEPLOY_PATH }}
