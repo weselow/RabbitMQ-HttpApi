@@ -1,6 +1,6 @@
 ﻿# RabbitMQ Minimal API Gateway
 
-[![.NET](https://github.com/actions/workflow_status.svg?branch=main&event=push&workflow=.NET)](https://github.com/<your_username>/<your_repository_name>/actions/workflows/dotnet.yml) <!-- Замените на ваш бейдж CI, если есть -->
+[![.NET](https://github.com/actions/workflow_status.svg?branch=main&event=push&workflow=.NET)](https://github.com/weselow/RabbitMQ-HttpApi/actions/workflows/dotnet.yml) <!-- Замените на ваш бейдж CI, если есть -->
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Простой и легковесный Minimal API на ASP.NET Core 8 для взаимодействия с очередями сообщений RabbitMQ. Предоставляет HTTP-эндпоинты для отправки и получения сообщений, обеспечивая базовую авторизацию по токену.
