@@ -4,12 +4,15 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>d73ec274-c98b-4443-a7f3-41d966afc7c0</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <!-- <InvariantGlobalization>true</InvariantGlobalization> -->
     <!-- Может быть выключено для некоторых локалей -->
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.16" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1-Preview.1" />
     <!-- или новее для net8.0 -->
     <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
     <!-- или новее -->
@@ -21,6 +24,12 @@
     <Folder Include="Configuration\" />
     <Folder Include="Middleware\" />
     <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Dockerfile">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
