@@ -19,9 +19,20 @@
     *   Автоматическое создание очередей (durable) при обращении, если они не существуют.
 *   **Современный стек:** Построен на .NET 8 и ASP.NET Core Minimal APIs.
 
-## Структура проекта
+## Запуск как сервиса на Linux VPS
 
+Приложение можно развернуть и запустить как systemd-сервис на VPS с Linux. 
+Подробная инструкция по настройке и публикации сервиса приведена в [readme.md в папке Linux](RabbitMQ-HttpApi/Linux/readme.md).
+
+
+## Запуск с использованием Docker
+
+Для запуска приложения с использованием Docker, выполните следующую команду:
+```bash
+docker compose up --build
 ```
+
+## Структура проекта
 /RabbitMqApi
 ├── RabbitMqApi.csproj        # Файл проекта
 ├── Program.cs                # Основной файл настройки и регистрации эндпоинтов
@@ -34,8 +45,6 @@
 │   └── AuthMiddleware.cs     # Middleware для авторизации по токену
 └── Services/
     └── RabbitService.cs      # Сервис для взаимодействия с RabbitMQ
-```
-
 ## Требования
 
 *   [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) или новее
@@ -43,29 +52,22 @@
 
 ## Настройка и Запуск
 
-1.  **Клонируйте репозиторий:**
-    ```bash
+1.  **Клонируйте репозиторий:**```bash
     git clone https://github.com/<your_username>/<your_repository_name>.git
-    cd <your_repository_name>/RabbitMqApi
-    ```
-
-2.  **Сконфигурируйте `appsettings.json` (или `appsettings.Development.json`):**
-    Откройте `appsettings.Development.json` (рекомендуется для локальной разработки, чтобы не коммитить секреты) или `appsettings.json` и укажите ваши параметры:
-
-    ```json
-    {
-      "Logging": {
-        "LogLevel": {
-          "Default": "Information",
-          "Microsoft.AspNetCore": "Warning",
-          "RabbitMqApi.Services.RabbitService": "Debug" // Для детального лога RabbitService
-        }
-      },
-      "RabbitMQ": {
-        "Host": "localhost", // Хост вашего RabbitMQ сервера
-        "Port": 5672,
-        "Username": "guest", // Имя пользователя RabbitMQ
-        "Password": "guest", // Пароль RabbitMQ
+    cd <your_repository_name>/RabbitMqApi2.  **Сконфигурируйте `appsettings.json` (или `appsettings.Development.json`):**
+    Откройте `appsettings.Development.json` (рекомендуется для локальной разработки, чтобы не коммитить секреты) или `appsettings.json` и укажите ваши параметры:{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning",
+      "RabbitMqApi.Services.RabbitService": "Debug" // Для детального лога RabbitService
+    }
+  },
+  "RabbitMQ": {
+    "Host": "localhost", // Хост вашего RabbitMQ сервера
+    "Port": 5672,
+    "Username": "guest", // Имя пользователя RabbitMQ
+    "Password": "guest", // Пароль RabbitMQ
         "VirtualHost": "/"
       },
       "Api": {
@@ -73,15 +75,13 @@
         "Port": 5000 // Порт, на котором будет работать API
       }
     }
-    ```
-    **Важно:** `Api:AuthToken` должен быть надежным токеном для защиты вашего API.
-
 3.  **Запустите приложение:**
     Из корневой папки проекта (`RabbitMqApi`):
-    ```bash
-    dotnet run
-    ```
-    Или через вашу IDE (Visual Studio, Rider, VS Code).
+ ```bash
+ dotnet run   
+ ```
+ 
+ Или через вашу IDE (Visual Studio, Rider, VS Code).
 
     API будет доступен по адресу `http://localhost:{Api:Port}` (например, `http://localhost:5000`).
     Swagger UI: `http://localhost:{Api:Port}/swagger`.
@@ -114,16 +114,16 @@
     *   `500 Internal Server Error`: Внутренняя ошибка сервера (например, проблема с RabbitMQ).
 
 **Пример (curl):**
-```bash
+```
 curl -X POST "http://localhost:5000/add/my_test_queue" \
--H "Authorization: Bearer YOUR_SUPER_SECRET_TOKEN" \
--H "Content-Type: application/json" \
--d '{ "message": "Hello RabbitMQ from API!", "id": 123 }'
+    -H "Authorization: Bearer YOUR_SUPER_SECRET_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{ "message": "Hello RabbitMQ from API!", "id": 123 }'
 
 curl -X POST "http://localhost:5000/add/another_queue" \
--H "Authorization: Bearer YOUR_SUPER_SECRET_TOKEN" \
--H "Content-Type: text/plain" \
--d "Простое текстовое сообщение"
+    -H "Authorization: Bearer YOUR_SUPER_SECRET_TOKEN" \
+    -H "Content-Type: text/plain" \
+    -d "Простое текстовое сообщение"
 ```
 
 ### 2. Получение сообщения из очереди
@@ -144,14 +144,14 @@ curl -X POST "http://localhost:5000/add/another_queue" \
     *   `500 Internal Server Error`: Внутренняя ошибка сервера.
 
 **Пример (curl):**
-```bash
+```
 curl -X GET "http://localhost:5000/get/my_test_queue" \
--H "Authorization: Bearer YOUR_SUPER_SECRET_TOKEN" \
--H "Accept: application/json"
+    -H "Authorization: Bearer YOUR_SUPER_SECRET_TOKEN" \
+    -H "Accept: application/json"
 
 curl -X GET "http://localhost:5000/get/another_queue" \
--H "Authorization: Bearer YOUR_SUPER_SECRET_TOKEN" \
--H "Accept: text/plain"
+    -H "Authorization: Bearer YOUR_SUPER_SECRET_TOKEN" \
+    -H "Accept: text/plain"
 ```
 
 ## Разработка и Тестирование

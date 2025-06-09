@@ -19,6 +19,12 @@ jobs:
     runs-on: [self-hosted, self-hosted-linux-rabbitmq-api] # Укажите метки вашего self-hosted runner'а
 
     steps:
+    - name: Set DOTNET_INSTALL_DIR
+      run: echo "DOTNET_INSTALL_DIR=$HOME/.dotnet" >> $GITHUB_ENV
+    
+    - name: Add dotnet to PATH
+      run: echo "$HOME/.dotnet" >> $GITHUB_PATH
+      
     - name: Checkout repository
       uses: actions/checkout@v4
 

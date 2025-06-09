@@ -1,0 +1,18 @@
+.dockerignore
+# Ignore build output
+bin/
+obj/
+*.user
+*.vs
+*.suo
+*.vscode
+Dockerfile
+*.md
+*.http
+*.json
+*.yml
+*.yaml
+*.log
+*.git
+.gitignore
+.dockerignore
