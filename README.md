@@ -33,6 +33,7 @@ docker compose up --build
 ```
 
 ## Структура проекта
+```
 /RabbitMqApi
 ├── RabbitMqApi.csproj        # Файл проекта
 ├── Program.cs                # Основной файл настройки и регистрации эндпоинтов
@@ -45,6 +46,8 @@ docker compose up --build
 │   └── AuthMiddleware.cs     # Middleware для авторизации по токену
 └── Services/
     └── RabbitService.cs      # Сервис для взаимодействия с RabbitMQ
+```
+
 ## Требования
 
 *   [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) или новее
@@ -52,11 +55,15 @@ docker compose up --build
 
 ## Настройка и Запуск
 
-1.  **Клонируйте репозиторий:**```bash
+1.  **Клонируйте репозиторий:**
+```bash
     git clone https://github.com/<your_username>/<your_repository_name>.git
-    cd <your_repository_name>/RabbitMqApi2.  **Сконфигурируйте `appsettings.json` (или `appsettings.Development.json`):**
+    cd <your_repository_name>/RabbitMqApi
+```
+2.  **Сконфигурируйте `appsettings.json` (или `appsettings.Development.json`):**
     Откройте `appsettings.Development.json` (рекомендуется для локальной разработки, чтобы не коммитить секреты) или `appsettings.json` и укажите ваши параметры:{
-  "Logging": {
+```
+"Logging": {
     "LogLevel": {
       "Default": "Information",
       "Microsoft.AspNetCore": "Warning",
@@ -75,8 +82,9 @@ docker compose up --build
         "Port": 5000 // Порт, на котором будет работать API
       }
     }
-3.  **Запустите приложение:**
-    Из корневой папки проекта (`RabbitMqApi`):
+}
+```
+3.  **Запустите приложение:** Из корневой папки проекта (`RabbitMqApi`):
  ```bash
  dotnet run   
  ```
