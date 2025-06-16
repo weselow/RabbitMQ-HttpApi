@@ -57,8 +57,8 @@ docker compose up --build
 
 1.  **Клонируйте репозиторий:**
 ```bash
-    git clone https://github.com/<your_username>/<your_repository_name>.git
-    cd <your_repository_name>/RabbitMqApi
+    git clone https://github.com/weselow/RabbitMQ-HttpApi.git
+    cd RabbitMQ-HttpApi/RabbitMqApi
 ```
 2.  **Сконфигурируйте `appsettings.json` (или `appsettings.Development.json`):**
     Откройте `appsettings.Development.json` (рекомендуется для локальной разработки, чтобы не коммитить секреты) или `appsettings.json` и укажите ваши параметры:{
