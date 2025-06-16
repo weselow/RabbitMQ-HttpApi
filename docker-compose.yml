@@ -6,29 +6,40 @@ services:
       - "5672:5672"   # AMQP
       - "15672:15672" # Management UI
     environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_USER: viking01
+      RABBITMQ_DEFAULT_PASS: viking01
       RABBITMQ_DEFAULT_VHOST: /
     healthcheck:
       test: ["CMD", "rabbitmqctl", "status"]
       interval: 10s
       timeout: 5s
       retries: 5
+    volumes:
+      - data:/var/lib/rabbitmq
 
   rabbitmq-httpapi:
-    build:
-      context: ./RabbitMQ-HttpApi
+    #build:
+    #  context: ./RabbitMQ-HttpApi
+    image: aweselow/rabbitmqhttpapi:latest
     container_name: rabbitmq-httpapi
     ports:
-      - "80:8080"
+      - "80:5000"
     depends_on:
       rabbitmq:
         condition: service_healthy
     environment:
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Port: 5672
-      RabbitMQ__Username: guest
-      RabbitMQ__Password: guest
+      RabbitMQ__Username: viking01
+      RabbitMQ__Password: viking01
       RabbitMQ__VirtualHost: /
       Api__AuthToken: YOUR_SUPER_SECRET_TOKEN
       Api__Port: 5000
+
+volumes:
+  data:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: './data'
